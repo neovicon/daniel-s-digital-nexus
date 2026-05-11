@@ -5,7 +5,13 @@ import { dirname, join } from 'path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 
-app.use(express.static(join(__dirname, 'dist')));
-app.get('*', (req, res) => res.sendFile(join(__dirname, 'dist/index.html')));
+// Serve static files from dist/client
+app.use(express.static(join(__dirname, 'dist', 'client')));
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+// SPA fallback - serve index.html for all routes
+app.get('*', (req, res) => {
+  res.sendFile(join(__dirname, 'dist', 'client', 'index.html'));
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
